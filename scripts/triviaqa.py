@@ -714,4 +714,4 @@ if __name__ == "__main__":
     #           warmup = 1000)
     #
     #
-    # main(args)
+    main(args)
