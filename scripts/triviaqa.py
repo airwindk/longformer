@@ -691,8 +691,7 @@ def main(args):
                          logger=logger if not args.disable_checkpointing else False,
                          checkpoint_callback=checkpoint_callback if not args.disable_checkpointing else False,
                          show_progress_bar=not args.no_progress_bar,
-                         use_amp=not args.fp32, amp_level='O2',
-                         precision=16
+                         use_amp=not args.fp32, amp_level='O2'
                          )
     if not args.test:
         trainer.fit(model)
