@@ -16,6 +16,7 @@ import pytorch_lightning as pl
 from pytorch_lightning.logging import TestTubeLogger
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.overrides.data_parallel import LightningDistributedDataParallel
+from pytorch_lightning.callbacks import EarlyStopping
 
 from longformer.longformer import Longformer
 from longformer.sliding_chunks import pad_to_window_size
@@ -683,7 +684,7 @@ def main(args):
     print(f'>>>>>>> #steps: {args.steps}, #epochs: {args.epochs}, batch_size: {args.batch_size * num_devices} <<<<<<<')
 
     trainer = pl.Trainer(gpus=args.gpus, distributed_backend='ddp' if args.gpus and (len(args.gpus) > 1) else None,
-                         track_grad_norm=-1, max_nb_epochs=args.epochs, early_stop_callback=None,
+                         track_grad_norm=-1, max_nb_epochs=args.epochs, early_stop_callback=[EarlyStopping(monitor='val_loss')],
                          accumulate_grad_batches=args.batch_size,
                          val_check_interval=args.val_every,
                          val_percent_check=args.val_percent_check,
