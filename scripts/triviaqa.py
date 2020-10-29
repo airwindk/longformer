@@ -231,6 +231,8 @@ class TriviaQADataset(Dataset):
             return qid
         elif 'sample' in self.file_path:
             return qid
+        elif 'dips_squad' in self.file_path:
+            return qid
         else:
             raise RuntimeError('Unexpected filename')
 
