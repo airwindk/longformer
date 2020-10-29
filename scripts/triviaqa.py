@@ -683,8 +683,16 @@ def main(args):
     args.steps = args.epochs * train_set_size / (args.batch_size * num_devices)
     print(f'>>>>>>> #steps: {args.steps}, #epochs: {args.epochs}, batch_size: {args.batch_size * num_devices} <<<<<<<')
 
+    early_stop_callback = EarlyStopping(
+        monitor='val_accuracy',
+        min_delta=0.00,
+        patience=3,
+        verbose=False,
+        mode='max'
+    )
+
     trainer = pl.Trainer(gpus=args.gpus, distributed_backend='ddp' if args.gpus and (len(args.gpus) > 1) else None,
-                         track_grad_norm=-1, max_nb_epochs=args.epochs, early_stop_callback=[EarlyStopping(monitor='val_loss')],
+                         track_grad_norm=-1, max_nb_epochs=args.epochs, early_stop_callback=[early_stop_callback],
                          accumulate_grad_batches=args.batch_size,
                          val_check_interval=args.val_every,
                          val_percent_check=args.val_percent_check,
