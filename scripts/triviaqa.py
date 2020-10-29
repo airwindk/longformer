@@ -691,7 +691,7 @@ def main(args):
                          logger=logger if not args.disable_checkpointing else False,
                          checkpoint_callback=checkpoint_callback if not args.disable_checkpointing else False,
                          show_progress_bar=not args.no_progress_bar,
-                         use_amp=False, amp_level='O2',
+                         use_amp=not args.fp32, amp_level='O2',
                          )
     if not args.test:
         trainer.fit(model)
@@ -703,7 +703,7 @@ if __name__ == "__main__":
     parser = TriviaQA.add_model_specific_args(main_arg_parser, os.getcwd())
     args = parser.parse_args()
 
-    print(args)
+    #print(args)
     # args = Namespace(attention_mode='sliding_chunks', batch_size=8, dev_dataset='data/dips_squad_formatted_dataset_valid.json',
     #           disable_checkpointing=False, doc_stride=-1,
     #           epochs=4, fp32=False, gpus='', ignore_seq_with_no_answers=False, lr=3e-05, max_answer_length=30,
@@ -712,6 +712,6 @@ if __name__ == "__main__":
     #           seed = 4321, test = False,
     #           train_dataset = 'data/dips_squad_formatted_dataset_train.json', val_every = 0.2, val_percent_check = 1.0,
     #           warmup = 1000)
-    #
-    #
+
+
     main(args)
