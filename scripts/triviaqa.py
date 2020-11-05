@@ -692,7 +692,8 @@ def main(args):
     )
 
     trainer = pl.Trainer(gpus=args.gpus, distributed_backend='ddp' if args.gpus and (len(args.gpus) > 1) else None,
-                         track_grad_norm=-1, max_nb_epochs=args.epochs, early_stop_callback=[early_stop_callback],
+                         track_grad_norm=-1, max_nb_epochs=args.epochs,
+                         # early_stop_callback=[early_stop_callback],
                          accumulate_grad_batches=args.batch_size,
                          val_check_interval=args.val_every,
                          val_percent_check=args.val_percent_check,
@@ -700,27 +701,28 @@ def main(args):
                          logger=logger if not args.disable_checkpointing else False,
                          checkpoint_callback=checkpoint_callback if not args.disable_checkpointing else False,
                          show_progress_bar=not args.no_progress_bar,
-                         use_amp=not args.fp32, amp_level='O2'
+                         use_amp=False, amp_level='O2'
                          )
     if not args.test:
         trainer.fit(model)
     trainer.test(model)
+    trainer.test()
 
 
 if __name__ == "__main__":
-    main_arg_parser = argparse.ArgumentParser(description="triviaQa")
-    parser = TriviaQA.add_model_specific_args(main_arg_parser, os.getcwd())
-    args = parser.parse_args()
+    # main_arg_parser = argparse.ArgumentParser(description="triviaQa")
+    # parser = TriviaQA.add_model_specific_args(main_arg_parser, os.getcwd())
+    # args = parser.parse_args()
 
-    #print(args)
-    # args = Namespace(attention_mode='sliding_chunks', batch_size=8, dev_dataset='data/dips_squad_formatted_dataset_valid.json',
-    #           disable_checkpointing=False, doc_stride=-1,
-    #           epochs=4, fp32=False, gpus='', ignore_seq_with_no_answers=False, lr=3e-05, max_answer_length=30,
-    #           max_doc_len=4096, max_num_answers=64, max_question_len=55, max_seq_len = 4096, model_path = 'scripts/models/pretrained/',
-    #           n_best_size = 20, no_progress_bar = False, num_workers = 4, regular_softmax_loss = False, save_dir = 'triviaqa', save_prefix = 'scripts/models/finetune',
-    #           seed = 4321, test = False,
-    #           train_dataset = 'data/dips_squad_formatted_dataset_train.json', val_every = 0.2, val_percent_check = 1.0,
-    #           warmup = 1000)
+    # print(args)
+    args = Namespace(attention_mode='sliding_chunks', batch_size=8, dev_dataset='data/dips_squad_formatted_dataset_noans_valid.json',
+              disable_checkpointing=False, doc_stride=-1,
+              epochs=4, fp32=False, gpus='', ignore_seq_with_no_answers=False, lr=3e-05, max_answer_length=30,
+              max_doc_len=4096, max_num_answers=64, max_question_len=55, max_seq_len = 4096, model_path = 'scripts/models/pretrained/',
+              n_best_size = 20, no_progress_bar = False, num_workers = 4, regular_softmax_loss = False, save_dir = 'triviaqa', save_prefix = 'scripts/models/finetune',
+              seed = 4321, test = False,
+              train_dataset = 'data/dips_squad_formatted_dataset_noans_train.json', val_every = 0.2, val_percent_check = 1.0,
+              warmup = 1000)
 
 
     main(args)
